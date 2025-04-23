@@ -1,0 +1,55 @@
+<!--
+Langkah-langkah Membuat Database dan Table di phpMyAdmin untuk To-Do App
+-->
+
+<!--
+1. Buka phpMyAdmin
+- Buka browser dan akses: http://localhost/phpmyadmin
+- Pastikan server Apache dan MySQL dalam kondisi aktif (melalui XAMPP/WAMP)
+-->
+
+<!--
+2. Membuat Database Baru
+- Klik menu "New" atau "Basis Data Baru" di sidebar kiri
+- Isi nama database dengan: todo_app
+- Biarkan kolom "Collation" tetap default (utf8mb4_general_ci)
+- Klik tombol "Create" atau "Buat"
+-->
+
+<!--
+3. Membuat Tabel "todos"
+- Setelah masuk ke database todo_app, scroll ke bagian "Create Table"
+- Isi:
+  - Name: todos
+  - Number of columns: 3
+- Klik tombol "Go" atau "Lanjutkan"
+-->
+
+<!--
+4. Atur Kolom Tabel
+- Kolom 1:
+  - Name: id
+  - Type: INT
+  - A_I (Auto Increment): Dicentang
+  - Index: PRIMARY
+
+- Kolom 2:
+  - Name: title
+  - Type: VARCHAR
+  - Length: 255
+
+- Kolom 3:
+  - Name: completed
+  - Type: BOOLEAN
+  - Default: false
+-->
+
+<!--
+5. Simpan Tabel
+- Klik tombol "Save" atau "Simpan" di bagian bawah
+- Tabel todos berhasil dibuat
+-->
+
+<!--
+Sekarang database todo_app dan tabel todos sudah siap digunakan oleh backend Express.js.
+-->
