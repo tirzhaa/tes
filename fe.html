@@ -1,0 +1,142 @@
+<!--
+Langkah-langkah Setup Frontend React (Vite) + Bootstrap untuk To-Do List
+
+1. Buat folder frontend
+- Masuk ke folder todo_list
+- Buat folder bernama frontend
+-->
+cd todo_list
+mkdir frontend
+cd frontend
+
+<!--
+2. Inisialisasi Vite + React
+-->
+npm create vite@latest frontend -- --template react
+
+<!--
+3. Masuk ke folder frontend hasil generate dan install dependencies
+-->
+cd frontend
+npm install axios bootstrap
+
+<!--
+4. Ganti isi file src/App.jsx dengan kode berikut:
+-->
+import { useState, useEffect } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+function App() {
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState('');
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/todos')
+      .then(response => {
+        setTodos(response.data);
+      })
+      .catch(err => console.error('Error fetching todos:', err));
+  }, []);
+
+  const handleAddTodo = () => {
+    if (!newTodo) return;
+
+    axios.post('http://localhost:5000/todos', { title: newTodo })
+      .then(response => {
+        setTodos([...todos, response.data]);
+        setNewTodo('');
+      })
+      .catch(err => console.error('Error adding todo:', err));
+  };
+
+  const handleToggleCompletion = (id, completed) => {
+    axios.put(`http://localhost:5000/todos/${id}`, { completed: !completed })
+      .then(() => {
+        setTodos(todos.map(todo =>
+          todo.id === id ? { ...todo, completed: !completed } : todo
+        ));
+      })
+      .catch(err => console.error('Error toggling completion:', err));
+  };
+
+  const handleDeleteTodo = (id) => {
+    if (window.confirm('Apakah Anda yakin ingin menghapus task ini?')) {
+      axios.delete(`http://localhost:5000/todos/${id}`)
+        .then(() => {
+          setTodos(todos.filter(todo => todo.id !== id));
+        })
+        .catch(err => console.error('Error deleting todo:', err));
+    }
+  };
+
+  return (
+    <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <div className="card shadow-lg" style={{ width: '800px' }}>
+        <div className="card-body">
+          <h1 className="text-center mb-4">To-Do List</h1>
+
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Tambah task baru..."
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+            />
+            <button className="btn btn-primary mt-2 w-100" onClick={handleAddTodo}>Tambah Task</button>
+          </div>
+
+          <ul className="list-group list-group-flush">
+            {todos.map((todo, index) => (
+              <li key={todo.id} className="list-group-item d-flex justify-content-between align-items-center">
+                <span className="text-black mr-5">
+                  {index + 1}.
+                </span>
+
+                <span
+                  style={{
+                    textDecoration: todo.completed ? 'line-through' : 'none',
+                    color: todo.completed ? 'green' : 'black'
+                  }}
+                  onClick={() => handleToggleCompletion(todo.id, todo.completed)}
+                  className="cursor-pointer text-truncate w-75"
+                >
+                  {todo.title}
+                </span>
+
+                <button
+                  className={`btn btn-sm ${todo.completed ? 'btn-success' : 'btn-warning'} ml-2`}
+                  disabled
+                >
+                  {todo.completed ? 'Sudah' : 'Belum'}
+                </button>
+
+                <button
+                  className="btn btn-danger btn-sm ml-2"
+                  onClick={() => handleDeleteTodo(todo.id)}
+                >
+                  Hapus
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+<!--
+5. Jalankan aplikasinya dengan perintah:
+-->
+npm run dev
+
+<!--
+Selesai! Frontend to-do list Anda sekarang aktif di http://localhost:5173 (default port Vite).
+-->
